@@ -1,0 +1,94 @@
+<?xml version="1.0"?>
+<rh:help xmlns:rh="http://www.r-project.org/help" xmlns:r="http://www.r-project.org" xmlns:s3="http://www.r-project.org/S3" xmlns:s4="http://www.r-project.org/S4" xmlns:xi="http://www.w3.org/2003/XInclude" created="2009-03-01 13:17:37">
+<r:package>XDocTools</r:package>
+<rh:topic> </rh:topic>
+<rh:topic>findXSLImports</rh:topic>
+<rh:title>Find imported XSL documents</rh:title>
+<rh:description>
+<para>This function, similar to  <r:func>getXIncludeFiles</r:func>,
+  finds the names of the documents that an XSL file imports or includes.
+ This allows the caller to find the dependencies between XSL files and
+ understand which set of XSL files are used by a top-level XSL document.
+     </para>
+</rh:description>
+<rh:arguments>
+   <rh:arg id="dir"><para>
+the directory in which to look for .xsl files.
+</para></rh:arg>
+   <rh:arg id="files"><para>the names of one or more XSL files to process
+and find the XSL files they import.
+</para></rh:arg>
+   <rh:arg id="filter.out"><para>
+a string providing a regular expression which is used to identify
+elements within <r:arg>files</r:arg> that should be discarded and 
+not searched for their import/include nodes.
+This is useful in conjunction with the default value for <r:arg>files</r:arg>
+so that one can include all but a few files.
+</para></rh:arg>
+   <rh:arg id="simplify"><para>a logical value that controls
+whether the result is left as a list with an element for each document in
+<r:arg>files</r:arg>, or simplified to a single character vector with no duplicates.
+</para></rh:arg>
+   <rh:arg id="recursive"><para>a logical value controlling
+whether each of the imported/included files are also searched
+for their import/include files and so on with those files.
+</para></rh:arg>
+   </rh:arguments>
+<rh:value>
+<para>
+If <r:arg>simplify</r:arg> is <r:false/>, a list with an element
+for each of the values in <r:arg>files</r:arg>. Each element is either a
+character vector if <r:arg>recursive</r:arg> is <r:false/> or
+a list containing lists for each of the import/include'd files.
+</para>
+<para>If <r:arg>simplify</r:arg> is <r:true/>, a character vector is returned.
+</para>
+</rh:value>
+
+<rh:seealso>
+<r:func>getXIncludeFiles</r:func>
+<r:func pkg="Sxslt">xsltApplyStyleSheet</r:func>
+   </rh:seealso>
+  <xi:include href="/Users/duncan/authorInfo.xml" xpointer="xpointer(/*/author)"/>
+<rh:references>
+<ulink url="http://www.w3.org/Style/XSL/"/>
+   </rh:references>
+<rh:examples>
+<r:init/>
+<rh:example id="">
+<rh:title>File</rh:title>
+<rh:description>
+<para>This searches the XSL file in the XDynDocs package.
+Note that we are using a URL and allowing a catalog file
+map this to the local file, or read it from the URL.
+	</para>
+</rh:description>
+<r:code>
+findXSLImports( , "http://www.omegahat.org/XDynDocs/XSL/html.xsl")
+findXSLImports(files = "http://www.omegahat.org/DynDocs.xsl")
+</r:code>
+</rh:example>
+
+<rh:example id="dir">
+<rh:title>Directories</rh:title>
+<rh:description>
+<para>This version reads all the XSL files in a directory and
+finds all their imports.
+This makes most sense when the .xsl files in the directory are unrelated
+and refer to .xsl files in other directories. This is the case, for example,
+when we have top-level XSL files for HTML, FO, LaTeX and text in one
+directory and each refers to other XSL files in separate directories.
+</para>
+</rh:description>
+<r:code>
+findXSLImports("~/Classes/StatComputing/XDynDocs/inst/XSL", simplify = FALSE)
+findXSLImports("~/Classes/StatComputing/XDynDocs/inst/XSL", simplify = FALSE, recursive = TRUE)
+</r:code>
+</rh:example>
+
+</rh:examples>
+<rh:keywords>
+ <rh:keyword>IO</rh:keyword>
+</rh:keywords>
+<rh:versionIntroduced version="0.1-0"/>
+</rh:help>

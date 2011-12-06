@@ -1,0 +1,20 @@
+<doc xmlns:r="http://www.r-project.org">
+<r:code addPrompt="I">
+x = list(a = 1,
+         b = 2)
+y = foo(asddddasdaasddsssssaasd,
+         adasdadad,
+          asdad, x = 1)
+plot(foo)
+</r:code>
+
+<r:code>
+x = list(a = 1,
+         b = 2)
+y = foo(asddddasdaasddsssssaasd,
+         adasdadad,
+          asdad, x = 1)
+plot(foo)
+</r:code>
+
+</doc>

@@ -1,0 +1,16 @@
+Package: XDocTools
+Version: 0.1-0
+Title: Tools for working with XML and XSL documents
+Description: This is a package intended to provide
+  helpful tools to facilitate authoring and working
+  with XML documents. If one uses structured documents,
+  one can use many powerful operations programmatically on these
+  documents to query and modify the documents.  This package is 
+  an attempt to collect some of these functions in a single place.
+  Its is also intended to illustrate how easy it is to write powerful tools
+  for processing structured documents.
+License: BSD
+Depends: methods, XML
+Suggests: RCurl
+Author: Duncan Temple Lang
+Maintainer: Duncan Temple Lang <duncan@r-project.org>

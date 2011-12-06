@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<rh:help xmlns:rh="http://www.r-project.org/help" xmlns:r="http://www.r-project.org" xmlns:s3="http://www.r-project.org/S3" xmlns:s4="http://www.r-project.org/S4" xmlns:xi="http://www.w3.org/2003/XInclude" created="2009-05-16 16:33:06" updated="2009-05-17 15:26:19">
+  <r:package>XDocTools</r:package>
+  <rh:topic> </rh:topic>
+  <rh:topic>toc</rh:topic>
+  <rh:method name="toc">character</rh:method>
+  <rh:method name="toc">XMLInternalDocument</rh:method>
+  <rh:title>Extract Table of Contents of a document</rh:title>
+  <rh:description>
+    <para>This function and its methods allow us to query the document for its table of contents.
+These are the titles within chapter and section headings.
+     </para>
+  </rh:description>
+  <rh:arguments><rh:arg id="file"><para>
+</para>the document whose table of contents is to be computed. This can be either the name of the document file, or and already parsed XML document (using <r:func>xmlParse</r:func></rh:arg>.
+    <rh:arg id="..."><para>additional parameters for methods to define</para></rh:arg></rh:arguments>
+  <rh:value>
+    <para>An object of S3 class
+     <r:s3class>"HierarchicalTableOfContents", "TableOfContents"</r:s3class>.
+    This is a list 
+     <r:list>
+       <item id="titles"><para>a factor giving the titles of the chapters, sections, etc.</para></item>
+       <item id="levels"><para>the indentation or nesting level of the corresponding elements in <r:field>titles</r:field></para></item>
+     </r:list>
+     </para>
+  </rh:value>
+  <rh:conditions>
+   </rh:conditions>
+  <rh:seealso><r:func pkg="XML">xmlParse</r:func>, <r:func pkg="XML">getNodeSet</r:func></rh:seealso>
+  <xi:include href="/Users/duncan/authorInfo.xml"/>
+  <rh:references>
+ Docbook reference manual
+   </rh:references>
+  <xi:include href="http://localhost/home/authorInfo.xml" xpointer="xpointer(//author)"/>
+  <rh:examples>
+  <rh:example>
+   <rh:description>This gives us the table of contents for a document describing this package.</rh:description>
+   <r:code>
+    f = system.file("doc", "WorkingWithDocs.xml", package = "XDocTools")
+    toc(f)
+   </r:code>
+  </rh:example>
+  <rh:example>
+   <rh:description>Get the table of contents from an already parsed XML document.</rh:description>
+   <r:code>
+    doc = xmlParse(f) 
+    toc(doc)
+   </r:code>
+  </rh:example>
+  </rh:examples>
+  <rh:versionIntroduced version="0.1-0"/>
+   <rh:keywords>
+       <rh:keyword>documentation</rh:keyword>
+   </rh:keywords>
+</rh:help>

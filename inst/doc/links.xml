@@ -1,0 +1,41 @@
+<article xmlns:r="http://www.r-project.org">
+<title>Tools for exploring unresolved links</title>
+<section>
+<title></title>
+<para>
+In this document, we think about tools for discovering
+(and potentially resolving)  links in XML documents that
+are not defined.
+When we run xsltproc on an XML document, we may end up with
+warnings/errors of the form
+<programlisting>
+Error: no ID for constraint linkend: tbl:builtins.
+Error: no ID for constraint linkend: Docbook.
+</programlisting>
+We want to be able to locate these references so that we can easily
+correct them.  At the least, we need the name of the file in which
+they occurred.
+</para>
+<para>
+<r:function>
+getLinks =
+function(doc)
+{
+  if(is.character(doc))
+    doc = xmlParse(doc)
+
+  nodes = getNodeSet(doc, "//xref|//link")
+  targets = sapply(nodes, xmlGetAttr, "linkend")
+  sappply(targets, getId, doc)
+}
+</r:function>
+<r:function>
+getId = 
+function(id, doc)
+{
+  getNodeSet(doc, paste("//*[@id=", sQuote(id), "]"))
+}
+</r:function>
+</para>
+</section>
+</article>

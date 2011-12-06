@@ -1,0 +1,104 @@
+<article xmlns:r="http://www.r-project.org">
+<section>
+<para>
+The idea is to provide some tools for helping
+to manage the case where we write templates for
+one format, e.g. FO, but not for another, e.g. HTML.
+So when we apply the XSL style sheet for HTML on
+an XML document, we get missing templates. 
+This function helps to find those ahead of time!
+</para>
+<para>
+<r:function>
+xsldiff = 
+function(x, y)
+{
+  paths = lapply(list(x, y),
+                  function(doc) {
+                    if(is.character(doc))
+                      doc = xmlParse(doc)
+                    unlist(strsplit(unlist(getNodeSet(doc, "//xsl:template/@match", "xsl")), "|", fixed = TRUE))
+                  })
+
+
+  structure(list(setdiff(paths[[1]], paths[[2]]),
+                 setdiff(paths[[2]], paths[[1]])),
+            names = c(x, y),
+            class = "XSLTemplateDiffs")
+}
+</r:function>
+<r:function>
+print.XSLTemplateDiffs = 
+function(x, ...)
+{
+  cat("In ", names(x)[1], "but not in\n   ", names(x)[2], "\n")
+  print(x[[1]])
+  cat("\nIn ", names(x)[2], "but not in\n   ", names(x)[1], "\n")
+  print(x[[2]])
+}
+</r:function>
+
+<r:eg eval="false">
+o = xsldiff("~/Classes/StatComputing/XDynDocs/inst/XSL/OmegahatXSL/fo/xml.xsl", 
+            "~/Classes/StatComputing/XDynDocs/inst/XSL/OmegahatXSL/html/xml.xsl")
+</r:eg>
+</para>
+</section>
+<section>
+<para>
+We can add to the above a slightly different idea.  We can read all
+the XSL files in a directory and pool all the templates and see which
+ones are present in one directory and not another.  This allows for
+templates to be in different files in different directories.  We have
+to worry about matching name spaces, but for the most part, people use
+the same prefixes.
+</para>
+</section>
+<section>
+<title>CSS</title>
+<para>
+When processing HTML files with XSL templates, we typically leave the
+appearance of the elements to the CSS (Cascading Style Files).  When
+we introduce these CSS classes in the XSL, we need to ensure that they
+are defined within the CSS file.  This function searches the templates
+for the different uses of CSS class attributes.  It returns a
+character vector giving the names of the classes, but importantly
+preserves the names of the HTML elements for which those classes are
+used.
+
+<r:function><![CDATA[
+getCSSClasses = 
+function(doc, discardDollar = TRUE)
+{
+   if(is.character(doc))
+      doc = xmlParse(doc)
+
+   els = unlist(getNodeSet(doc, "//xsl:template//*[@class]", 
+                                     c(xsl = "http://www.w3.org/1999/XSL/Transform")))
+
+   els = structure(sapply(els, xmlGetAttr, "class"),
+                   names = sapply(els, xmlName))
+   els = els[!duplicated(paste(names(els),  els, sep = ":"))]
+   if(discardDollar) {
+       if(length(i <- grep("$", els, fixed = TRUE)))
+          els = els[ - i ]
+   }
+
+   els
+}
+]]></r:function>
+</para>
+<para>
+To try this out:
+<r:eg>
+getCSSClasses("~/Classes/StatComputing/XDynDocs/inst/XSL/OmegahatXSL/html/Rstyle.xsl")
+</r:eg>
+</para>
+<para>
+It would be nice to have a CSS parser within R
+so we could then compare which classes have a definition.
+See <ulink url="http://www.w3.org/Style/CSS/SAC/"/>.
+
+</para>
+</section>
+</article>

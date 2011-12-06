@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<rh:help xmlns:rh="http://www.r-project.org/help" xmlns:r="http://www.r-project.org" xmlns:s3="http://www.r-project.org/S3" xmlns:s4="http://www.r-project.org/S4" xmlns:xi="http://www.w3.org/2001/XInclude" created="2009-02-27 17:34:11" updated="2009-05-15 13:12:40">
+  <rh:topic> </rh:topic>
+  <rh:topic>findMissingTitles</rh:topic>
+  <rh:topic>findMissingFigureTitles</rh:topic>
+  <rh:topic>findMissingTableTitles</rh:topic>
+  <rh:method name="toc">XMLInternalDocument</rh:method>
+  <rh:method name="toc">character</rh:method>
+  <rh:title>Identify empty title elements</rh:title>
+  <rh:description>
+    <para>These functions identify title elements within a document
+     that have no content.
+       We are also interested in sections, chapters, examples, figures, tables, etc.    
+       that have no title elements
+     </para>
+  </rh:description>
+  <rh:arguments>
+    <xi:include href="getXIncludeFiles.xml" xpointer="xpointer(//*[@id='doc'])"/>
+    <rh:arg id="nodes">a logical value indicating whether we want the nodes or the text values</rh:arg>
+  </rh:arguments>
+  <rh:value>
+    <para>
+     </para>
+  </rh:value>
+  <rh:details>
+    <para>
+     </para>
+  </rh:details>
+  <rh:seealso>
+   </rh:seealso>
+  <xi:include href="/Users/duncan/authorInfo.xml" xpointer="xpointer(/*/author)"/>
+  <rh:references>
+   </rh:references>
+  <rh:examples>
+    <r:init/>
+    <rh:example id="">
+      <rh:title> </rh:title>
+      <rh:description>
+        <para>
+	</para>
+      </rh:description>
+      <r:code>
+	</r:code>
+    </rh:example>
+  </rh:examples>
+  <rh:keywords>
+    <rh:keyword/>
+  </rh:keywords>
+  <rh:versionIntroduced version=""/>
+</rh:help>

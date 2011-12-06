@@ -1,0 +1,20 @@
+<article>
+
+<section>
+<title>Introduction</title>
+<para>
+This is a regular section that does have content.
+The function getEmptySections will find the two after this
+one that have just a title and no content, and no content at all.
+</para>
+</section>
+
+<section>
+<title>A title</title>
+</section>
+
+<section>
+<title></title>
+</section>
+
+</article>

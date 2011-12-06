@@ -1,0 +1,77 @@
+<?xml version="1.0"?>
+<rh:help xmlns:rh="http://www.r-project.org/help" xmlns:r="http://www.r-project.org" xmlns:xi="http://www.w3.org/2001/XInclude" created="2009-02-27 08:38:00" updated="2009-02-27 09:34:00">
+  <r:pkg>XDocTools</r:pkg>
+  <rh:topic>getWords</rh:topic>
+  <rh:topic>wordCount</rh:topic>
+  <rh:title>Get or count the words in an XML document</rh:title>
+  <rh:description>
+    <para>These functions make it easy to get access to all the words
+  in the text of an XML document or to merely get the number of words.
+ These functions discard all the XML markup  and focus only on the text nodes.
+     </para>
+  </rh:description>
+  <rh:arguments>
+    <xi:include href="getXIncludeFiles.xml" xpointer="xpointer(//*[@id='doc'])"/>
+    <rh:arg id="split">
+      <para>a string giving a regular expression that is used to split a text string into words.</para>
+    </rh:arg>
+  </rh:arguments>
+  <rh:value>
+    <para>
+ <r:func>getWords</r:func> returns a character vector of all the words in the document.
+    </para>
+    <para>
+    <r:func>wordCount</r:func> returns an integer giving the total number of words in the document.
+     </para>
+  </rh:value>
+
+  <rh:seealso>
+<r:func pkg="XML">getNodeSet</r:func>
+   </rh:seealso>
+
+  <xi:include href="/Users/duncan/authorInfo.xml" xpointer="xpointer(/*/author)"/>
+
+  <rh:examples>
+    <r:init/>
+    <rh:example id="" topic="wordCount">
+      <rh:title> </rh:title>
+      <rh:description>
+        <para>This computes the number of words in a mid-size book.
+	</para>
+      </rh:description>
+      <r:code>
+   wordCount("~/Books/XMLTechnologies/book.xml")
+	</r:code>
+    </rh:example>
+    <rh:example topic="wordCount">
+      <rh:description>
+        <para>
+   This reads the contents of the XML and Web technologies book and finds all the included files.
+   Then it computes the word count for each of those separate files.
+    </para>
+      </rh:description>
+      <r:code><![CDATA[
+ inc = getXIncludeFiles("~/Books/XMLTechnologies/book.xml", recursive = TRUE, full.names = TRUE)
+ counts = sapply(names(inc), wordCount)
+ barchart(counts)
+]]></r:code>
+    </rh:example>
+    <rh:example topic="getWords">
+     <rh:description><para>
+      Here we read the actual words in the book. Then we look at the distribution of these words
+      and look at the words that are not excessively common, but occur numerous times.
+     </para></rh:description>
+      <r:code><![CDATA[
+ words = getWords("~/Books/XMLTechnologies/book.xml")
+ sort(table(words), decreasing = TRUE)
+ x = log(table(words))
+ barchart(x)
+ names(x) [ x > 2 & x < 4] 
+]]></r:code>
+    </rh:example>
+  </rh:examples>
+  <rh:keywords>
+    <rh:keyword>IO</rh:keyword>
+  </rh:keywords>
+  <rh:versionIntroduced version=""/>
+</rh:help>

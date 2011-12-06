@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<rh:help xmlns:rh="http://www.r-project.org/help" xmlns:r="http://www.r-project.org" xmlns:s3="http://www.r-project.org/S3" xmlns:s4="http://www.r-project.org/S4" xmlns:xi="http://www.w3.org/2001/XInclude" created="2009-02-27 15:07:47">
+  <rh:topic>getAllNodeNames</rh:topic>
+  <rh:title>Compute the names of all XML nodes in a document</rh:title>
+  <rh:description>
+    <para>This function is useful for finding the names of all the
+XML nodes used in the specified XML document.
+This allows us to verify that there are XSL templates for all of
+them, find which are most widely used, etc.
+     </para>
+  </rh:description>
+  <rh:arguments>
+   <xi:include href="getXIncludeFiles.xml" xpointer="xpointer(//*[@id='doc'])"/>  
+   <rh:arg id="full"><para>a logical value that indicates whether
+to use the full name with the XML namespace prefix,
+or the simple name. This is passed to <r:func pkg="XML">xmlName</r:func>.
+</para></rh:arg>
+   </rh:arguments>
+  <rh:value>
+    <para>a frequency table giving the number  of times
+each node name appears in the document.
+     </para>
+  </rh:value>
+  <rh:seealso>
+ <r:func>wordCount</r:func> and <r:func>getWords</r:func>
+  </rh:seealso>
+  <xi:include href="/Users/duncan/authorInfo.xml" xpointer="xpointer(/*/author)"/>
+  <rh:examples>
+    <r:init/>
+    <rh:example id="">
+      <rh:title> </rh:title>
+      <rh:description>
+        <para>This examines this very document to find all the nodes it uses.
+	</para>
+      </rh:description>
+      <r:code>
+  f = system.file("XMLHelp", "getAllNodeNames.xml", package = "XDocTools")
+  getAllNodeNames(f)
+	</r:code>
+    </rh:example>
+  </rh:examples>
+  <rh:keywords>
+    <rh:keyword>IO</rh:keyword>
+  </rh:keywords>
+  <rh:versionIntroduced version=""/>
+</rh:help>

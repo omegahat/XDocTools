@@ -1,0 +1,86 @@
+<?xml version="1.0"?>
+<rh:help xmlns:rh="http://www.r-project.org/help" xmlns:r="http://www.r-project.org" xmlns:s3="http://www.r-project.org/S3" xmlns:s4="http://www.r-project.org/S4" xmlns:xi="http://www.w3.org/2001/XInclude" created="2009-02-27 14:36:13" updated="2009-02-27 14:38:08">
+  <rh:topic>addFunctionID</rh:topic>
+  <rh:topic>addFunctionPackage</rh:topic>
+  <rh:topic>checkFunctions</rh:topic>
+  <rh:title>Annotate nodes in an XML document defining or referring to a function</rh:title>
+  <rh:description>
+    <para>These functions update elements within a document 
+  that refer to R variables or R function definitions.
+  <r:func>addFunctionID</r:func> adds an id attribute to each 
+  r:function node that does not have one and calculates this
+  by parsing the code.
+</para>
+    <para>
+   <r:func>addFunctionPackage</r:func> finds the r:func nodes
+  that have no pkg attribute and adds the package corresponding to the
+  function being referenced.  This function can also update nodes with an existing
+  pkg attribute.  This is controlled by the <r:arg>all</r:arg> parameter.
+     </para>
+
+  <para>
+  <r:func>checkFunctions</r:func> examines the r:func nodes in the document
+ and attempts to find the corresponding function. It reports the names of the functions
+ that couldn't be found.
+  </para>
+  </rh:description>
+  <rh:arguments>
+    <rh:arg id="doc">
+      <para>the XML document containing the documentation. This can be either the name of the
+  file (or even URL), or an already parsed XML document, i.e. an <s3:class>XMLInternalDocument</s3:class>
+  object.
+</para>
+    </rh:arg>
+    <rh:arg id="nodes">
+      <para>the XPath expression that will be used to retrieve the nodes.
+ This is a character string. See <r:func pkg="XML">getNodeSet</r:func>.
+</para>
+    </rh:arg>
+    <rh:arg id="save">
+      <para>a logical value which indicates whether the modified document should be written back to the file
+  from which it was originally read. If one is making several changes in succession, it is slightly
+  more efficient to save the document at the end of all of these changes.
+</para>
+    </rh:arg>
+    <rh:arg id="all">
+      <para>a logical which if <r:true/> indicates that all r:func nodes should be processed even if they have an existing pkg attribute.
+</para>
+    </rh:arg>
+  </rh:arguments>
+  <rh:value>
+    <para>
+     </para>
+  </rh:value>
+  <rh:details>
+    <para>
+     </para>
+  </rh:details>
+  <rh:seealso>
+   </rh:seealso>
+   <xi:include href="/Users/duncan/authorInfo.xml" xpointer="xpointer(/*/author)"/>
+
+  <rh:references>
+   </rh:references>
+
+  <rh:examples>
+    <r:init/>
+    <rh:example xmlns:rh="http://www.r-project.org/help" xmlns:r="http://www.r-project.org" id="funcID">
+      <r:code><![CDATA[
+addFunctionID(system.file("sampleDocs", "functionRefs.xml", package = "XDocTools"), save = FALSE)
+]]></r:code>
+    </rh:example>
+    <rh:example xmlns:rh="http://www.r-project.org/help" xmlns:r="http://www.r-project.org" id="packageRef">
+   <rh:description><para>
+  This adds the package to the document.
+   </para></rh:description>
+      <r:code><![CDATA[
+addFunctionPackage(system.file("sampleDocs", "functionRefs.xml", package = "XDocTools"), save = FALSE)
+]]></r:code>
+    </rh:example>
+  </rh:examples>
+  <rh:keywords>
+    <rh:keyword>IO</rh:keyword>
+    <rh:keyword>documentation</rh:keyword>
+  </rh:keywords>
+  <rh:versionIntroduced version=""/>
+</rh:help>

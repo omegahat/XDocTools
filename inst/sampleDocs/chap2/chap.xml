@@ -1,0 +1,6 @@
+<chapter>
+<title>The next chapter</title>
+<section>
+<xi:include href="section.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+</section>
+</chapter>

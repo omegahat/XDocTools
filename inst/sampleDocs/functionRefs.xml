@@ -1,0 +1,36 @@
+<article xmlns:r="http://www.r-project.org">
+
+<para>
+
+This is a simple document that refers to R functions and packages.
+For example, we might refer to <r:func>xmlParse</r:func>
+or <r:func>sqrt</r:func> or <r:func>source</r:func>
+or <r:func>svg</r:func>.
+Alternatively, we might fully qualify the references, 
+specifying the package <r:func pkg="XML">xmlParse</r:func> explicitly.
+We have functions that will update the first one however.
+</para>
+<para>
+Here we define a function. The function
+<r:func>addFunctionID</r:func> will take care of adding
+the id to the r:code node.
+<r:function>
+foo =
+function(x, y)
+{
+  x + y 
+}
+</r:function>
+
+Here we define two functions in a single code block.
+<r:function>
+square = 
+function(x)
+ x^2
+
+cube = 
+function(x)
+  x^3
+</r:function>
+</para>
+</article>

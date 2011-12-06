@@ -1,0 +1,42 @@
+
+export(addFunctionID,
+	addFunctionPackage,
+	findMissingTitles,
+	getAllNodeNames,
+	getBibRefs,
+	getDocLocation,
+	getEmptyLinks,
+	getFunctionReferences,
+	getIds,
+	getLinks,
+	getMalformedLinks,
+	getTodos,
+	getWords,
+	getXIncludeFiles,       
+	getXRefs,
+	wordCount,
+	xmllint,
+        findMissingFigureTitles,
+        findMissingTableTitles,
+        addCodePrompt)
+
+#	getXIncludes,
+
+#S3method(getXIncludes, XMLInternalDocument)
+#S3methd(getXIncludes, character)
+
+#	processNodes,
+
+
+export(findXSLImports, getXSLTemplates, getXSLParameters)
+
+exportMethods(toc)
+S3method(print, HierarchicalTableOfContents)
+
+export(checkFunctions)
+export(loadDocPackages)
+
+export(generateRdFiles)
+
+export(findXSLMacros)
+

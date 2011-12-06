@@ -1,0 +1,101 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="file:///Users/duncan/Books/RXMLDoc/inst/xsl/xml2html.xsl" ?> 
+<rh:help xmlns:rh="http://www.r-project.org/help" xmlns:r="http://www.r-project.org" xmlns:xi="http://www.w3.org/2001/XInclude" created="2009-02-27 06:49:57" updated="2009-02-27 07:51:50">
+
+  <rh:topic>getXIncludeFiles</rh:topic>
+  <rh:title>Find all documents XInclude'd in this one</rh:title>
+  <rh:description>
+    <para>This function finds all the XInclude   nodes within this document
+     and identifies the included documents. It can operate recursively, 
+     finding the included documents within each of those and so on.
+     This is useful for determining if the files are included more than once,
+     if some files in a directory are not included at all, and for obtaining
+     a dependency list, e.g. for use with make rules.
+  </para>
+    <para>This doesn't deal with XPointer qualifications at this point in time. See <ulink url="#rh-Details">Details</ulink>.
+     </para>
+  </rh:description>
+ <rh:details>
+<para>
+  Since we don't apply the xpointer attribute of an include, when we process the files recursively, we look at the entire 
+  included document. If there is an xpointer attribute that causes  only a sub-part(s) of the  file to be included,
+  then we will include too much. And if these extra nodes contain include nodes, we will count them erroneously.
+  We could use an alternative approach which is to find the nodes and then use <r:func package="XML">processXInclude</r:func>.
+  However, we have to stop the include processing recursively.  We can do this with the XML parsing flags.
+  Alternatively, we could traverse the entire tree and find the XMLXIncludeStartNode elements and 
+  get the file name from that and process the associated nodes.
+</para>
+ </rh:details>
+  <rh:arguments>
+    <rh:arg id="doc">
+      <para>the XML document to be processed. This can be either the file name (or URL) or the already parsed XML document
+      returned from <r:func pkg="XML">xmlParse</r:func>.</para>
+    </rh:arg>
+    <rh:arg id="recursive">
+      <para>a logical value indicting whether to find the included documents within the included documents.</para>
+    </rh:arg>
+    <rh:arg id="nodes">
+      <para>a logical value indicating whether we should return the XML include nodes, or the names of the files.
+       This is useful if one wants to modify the nodes or get the xpointer attribute.</para>
+    </rh:arg>
+    <rh:arg id="full.names">
+      <para>a logical value indicating whether we are to give full paths for the files.
+     If this is <r:false/>, we use the names as they appear in the href attribute within the include nodes within the document.</para>
+    </rh:arg>
+    <rh:arg id="namespace">
+      <para>a named character vector giving the namespace definitions for identifying XInclude. There are two in reasonably common use.</para>
+    </rh:arg>
+    <rh:arg id="verbose">
+      <para>a logical indicating whether to emit information about which files are being processed as the search proceeds.</para>
+    </rh:arg>
+    <rh:arg id="table">
+      <para>a logical value which indicates whether to return a frequency table of the include file names.
+     This makes the result more compact if there are many repeated includes.</para>
+    </rh:arg>
+  </rh:arguments>
+  <rh:value>
+    <para>The return value depends on the value of different arguments.
+  If <r:arg>recursive</r:arg> is true  and <r:arg>table</r:arg> is <r:true/>,  a frequency table of the included files is 
+  returned. If <r:arg>table</r:arg> is <r:false/>  however, then the character vector of all 
+  included file names is returned.
+  If <r:arg>recursive</r:arg> is <r:false/>, then either the include nodes or the 
+   character vector of included files is returned. This is controlled by the value
+  of <r:arg>nodes</r:arg>.   In all cases, if the names of the files are being returned,
+  the names are converted to normalized path names (typically fully-qualified names) if <r:arg>full.names</r:arg> is
+  specified.
+     </para>
+  </rh:value>
+
+  <rh:seealso>
+<r:func pkg="XML">getNodeSet</r:func>
+<ulink url="http://www.w3.org/TR/xinclude/">XInclude specification</ulink>
+   </rh:seealso>
+  <xi:include href="/Users/duncan/authorInfo.xml" xpointer="xpointer(/*/author)"/>
+
+
+  <rh:examples>
+    <r:init/>
+  
+    <rh:example xmlns:rh="http://www.r-project.org/help" xmlns:r="http://www.r-project.org" id="book">
+      <rh:title>Finding XIncludes in a book</rh:title>
+      <rh:description><para>
+       This identifies the included files in a sample book that uses XInclude to 
+       bring in the chapters from separate files and a section from separate file.
+
+       It converts the file names to fully-qualified paths and operates recursively.
+       This gives us the dependency list for the entire book (at the present instance).
+      </para></rh:description>
+      <r:code><![CDATA[
+f = system.file("sampleDocs", "book.xml", package = "XDocTools")
+getXIncludeFiles(f, recursive = TRUE, full.names = TRUE)
+]]></r:code>
+    </rh:example>
+  </rh:examples>
+
+  <rh:keywords>
+    <rh:keyword>IO</rh:keyword>
+  </rh:keywords>
+
+  <rh:versionIntroduced version=""/>
+
+</rh:help>

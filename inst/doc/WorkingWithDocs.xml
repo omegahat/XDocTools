@@ -1,0 +1,301 @@
+<article xmlns:r="http://www.r-project.org">
+<title>On some benefits of using XML for authoring documents</title>
+<xi:include href="/Users/duncan/authorInfo.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+<section>
+<title>The Basic Differences</title>
+<para>
+There is a fundamental difference between working with
+structured XML documents and LaTeX documents.
+Certainly we run both through a processor to get a rendered
+view, e.g. PDF.  But when we want to get information about 
+the document, we have to use regular expressions or text editors
+for LaTeX documents. But for XML documents, we have the entire
+suite of XML-related technologies at our disposal, and we can
+use these from within R or other languages such as Perl and Python.
+And these are the tools we use to process other XML documents,
+e.g. scrape HTML documents, query XML data.
+</para>
+<para>
+Consider the question of finding which sections have no text
+and need to be filled in. This is not something we can easily
+find with grep.  Regular expressions will work, but they require
+looking at blocks of text. Simple single-line  regular expression
+matching won't suffice. And there are a lot of details in using
+regular expressions so as not to be misled that there is actual text
+there that is a) part of another (sub-) section, or is commented  out.
+With XML, we can search as 
+<!-- Want these to be more useful. -->
+<r:code><![CDATA[
+getNodeSet(a, "//section[not(para)]") # find a section with no <para> elements
+getNodeSet(a, "//section[not(.//text())]") # find a section with no free standing text anywhere within it.
+]]></r:code>
+</para>
+<para>
+It is very easy to find a node and augment/replace an attribute or its
+content with structured high-level commands that take care of all the
+details.  Then we can save the document back to a file. This is much
+more complex with regular expressions and substitutions, especially
+across lines.  For instance, we can rename a function, or specify that
+it is in a different package.
+</para>
+<para>
+When we deal with a (La)TeX document, I ran into the following
+problem.  The book is made up of 12 chapters, each with its own
+directory and input file, and some with many images. The "problem" is
+that some of the directories do not correspond to chapters, and some
+chapter directories have additional files that are not used.  When one
+author makes changes and, e.g., adds a figure to the document, she
+then adds the new file to the version control system (e.g. CVS or
+SVN).  If she forgets, however, other authors cannot build the
+document when they update their local working version of the
+document(s).  The same thing happens when we create a new sub-document
+in a separate file and then include that in the top-level document,
+e.g. using \input in LaTeX or x:include in XML. If we forget to
+"transfer" the sub-document, again we won't be able to build the
+top-level document.
+</para>
+<para>
+So we want to be able to search the top-level document
+and all those that it includes (and that they include and so on).
+We have to search only the files that are actually included in the top-level
+document. We don't want to identify additional files that an individual author has 
+in her directory that are not part of the "shared" document.
+This means that we have to be a little more precise than simply finding
+all .tex/.xml/.png files.  Instead, we have to find the subset that are 
+referenced in the document.
+</para>
+<para>
+We have to find the referenced sub-documents in two steps.
+First, we can find all the images, or indirectly included documents.
+These are indirectly included in the sense that their contents are not included
+directly by the typesetting system, but rather left to later rendering.
+Their dimensions are included. These are \includegraphics and <xml:tag>graphic</xml:tag>
+commands in LaTeX and Docbook.
+We can find these by building the entire document, e.g using -xinclude for XML
+so that we parse the entire document with all the XIncludes processed recursively.
+We then use XPath to find these <xml:tag>graphic</xml:tag> nodes.
+With LaTeX, things are more complicated. We have to use a recursive processing
+technique.  We have to find the \includegraphics in the top-level document.
+Then we have to find the \inputs in the top-level documents and recursively
+process each of these.
+</para>
+<para>
+We have to do the same recursive processing to find the included documents
+(not graphics) in XML. For this, we explicitly do not use -xinclude when
+parsing the top-level XML document. Then we use XPath to find the 
+<xml:tag>xi:include</xml:tag> nodes within that. We recursively
+process each of these in the same manner.
+</para>
+<para>
+In LaTeX, we can grep for \input to find the included sub-files.
+However, to correctly do this in all cases, we have to be concerned
+that such commands appear inside comments, i.e. after a % on a line or
+within a \begin{comment}..\end{comment} environment instance.
+Similarly, an \input might appear after an \endinput which marks the
+end of the document.  So our text matching needs to be quite
+sophisticated to avoid false positives.
+</para>
+<para>
+With XInclude, we avoid this text matching problem and deal with
+structured content. We can ignore comments with ease.  We can use
+XPath to find those <xml:tag>include</xml:tag> and
+<xml:tag>graphic</xml:tag> elements that are not within comments or to
+be ignored.  But XInclude also allows one to include just specific
+parts of the using XPointer. When we find the XInclude node in a
+document, we can perform the inclusion with the XPointer restriction
+using the <r:func>processXInclude</r:func> function in R.  This then
+ensures that we deal with only the nodes that will actually be used.
+This makes the results precise and robust.
+</para>
+<para>
+The XInclude mechanism really does allow us to avoid repetition and
+foster reuse of content. This takes some getting used to and
+organization. But when combined with different XSL files that project
+different views, this is immensely powerful.
+</para>
+<para>
+XIncludes are much more powerful than LaTeX's input or include.
+We can include sub-parts of an other document using XPointer.
+This is much higher resolution than \endinput.
+</para>
+<para>
+The rule/template-based XSL approach is quite different from
+imperative programming of LaTeX in which we define functions/macros.
+For one, the use of XPath to identify matches for a template allows us
+much more flexibility than simple macros.  We can use context to
+differentiate templates, e.g. title within a section and within an example.
+</para>
+<para>
+Macros in LaTeX can be redefined, but we cannot "inherit" them.
+XSL gives us both include and import and the ability to call imported
+templates. This is very powerful and gives us  a basic object-oriented/extensibility
+mechanism.
+</para>
+<para>
+XSL parameters don't (readily) exist in LaTeX.
+</para>
+<para>
+The Semantic Web may not happen in its full predicted glory.  But it
+can happen at a more "local" level and we an influence this.
+Documents that contain the process, be it data analysis, simulation,
+proof, etc. can contain so much more information.  We can include
+approaches we tried that didn't pan out (answering reviewers
+questions), alternative approaches that we don't want to display in
+the "views", but that we want to include as part of the process.
+</para>
+</section>
+
+<section>
+<title>Some Example Operations</title>
+<para>
+Can easily find the names of all the elements that have an id
+and so which we can cross-reference  with an xref element.
+<r:code>
+book = xmlParse("~/Books/XMLTechnologies/book.xml", xinclude = TRUE)
+ids = getNodeSet(book, "//@id")
+</r:code>
+</para>
+<para>
+Find all the xrefs and see what we are missing.
+<r:code>
+book = xmlParse("~/Books/XMLTechnologies/book.xml", xinclude = TRUE)
+o = getNodeSet(book, "//xref/@linkend")
+ends = as.character(unlist(o))
+
+  # refs that don't exist.
+setdiff(ends, as.character(unlist(ids)))
+  # ids that aren't yet used.
+setdiff(as.character(unlist(ids)), ends)
+</r:code>
+</para>
+<para>
+We can find all the files that are XInclude'd in our document, either
+directly or indirectly.  For the direct inclusions, we turn XInclude
+processing off.
+<r:code>
+book = xmlParse("~/Books/XMLTechnologies/book.xml", xinclude = FALSE)
+i = getNodeSet(book, "//xi:include", "xi")
+</r:code>
+</para>
+<para>
+Finding sections or chapters without a title?
+<r:code>
+book = xmlParse("~/Books/XMLTechnologies/book.xml")
+o = getNodeSet(book, "//section[not(./title)]")
+o = getNodeSet(book, "//chapter[not(./title)]")
+     # sections with a title element, but no strings.
+o = getNodeSet(book, "//section[normalize-space(./title/text()) = '']")
+</r:code>
+</para>
+<para>
+<note>See findXInclude</note>
+We can find the nodes that are XInclude'd in the following way.
+I we know one of the nodes that is included, we can go straight to it
+and then go up  the parent hierarchy and 
+look at the previous sibling. 
+If it has a class XMLXIncludeStartNode
+<r:code>
+book = xmlParse("~/Books/XMLTechnologies/book.xml")
+o = getNodeSet(book, "//partintro")
+class(getSibling(o[[1]], FALSE))
+</r:code>
+We can get the name ("include") and the attributes including the href, xpointer, etc.
+</para>
+
+<para>
+Find all elements for which we need templates in our XSL.
+<r:code>
+elNames = xpathSApply(book, "//*", xmlName, TRUE)
+sort(table(elNames), decreasing = TRUE)
+</r:code>
+
+What about the names of all the nodes?
+<r:code>
+doc = xmlParse("book.xml")
+nodeNames = xpathSApply(doc, "//*", xmlName)
+sort(table(nodeNames), decreasing = TRUE)
+</r:code>
+Alternatively, we can try to do this all with XPath:
+<r:code>
+getNodeSet(doc, "//*/local-name()")
+</r:code>
+</para>
+
+<para>
+Find all the fixme, todo, Note elements
+<r:code>
+o = getNodeSet(book, "//fixme|//todo|//Note|//question")
+</r:code>
+To be really useful, we really need the context,
+i.e. the (sub) document.
+Use <r:func>findXInclude</r:func> for this
+</para>
+
+<para>
+We can find bibliography references and match them to the bibliography.
+We can find which have text and which use the default. 
+We can find whether we have more than one citation to the same thing
+or just one initial citation.
+<r:code>
+bibRefs = getNodeSet(book, "//biblioref")
+</r:code>
+
+</para>
+<para>
+What about all external links in our documents?
+Those that need to be filled in with actual links?
+<r:code>
+doc = xmlParse("book.xml")
+emptyLinks = getNodeSet(doc, "//ulink[not(@url) or @url='']")
+</r:code>
+</para>
+<para>
+Links that have an href and not a url attribute?
+<r:code>
+doc = xmlParse("book.xml")
+broken = getNodeSet(doc, "//ulink[@href]")
+</r:code>
+</para>
+<para>
+This function tries to identify the specified node
+within the document hierarchy, i.e. the sub-section, section, chapter.
+We want to extend this to get the position/index of each of these.
+<r:function id="getDocLocation">
+getDocLocation =
+function(node, style = c("nodes", "titles", "position"))
+{
+   exprs = list(nodes = "./ancestor::chapter|./ancestor::section",
+                titles = "./ancestor::section/title/text()|./ancestor::chapter/title/text()",
+                position = c("count(./ancestor::section/preceding-sibling::*)+1", "count(./ancestor::chapter/preceding-sibling::*)+1"))
+
+   i = match.arg(style, names(exprs))
+     
+   if(i == "position") {
+     structure(sapply(exprs[[i]], function(xp) getNodeSet(node, xp)),
+                 names = xpathSApply(node, exprs[["nodes"]], xmlName))
+   } else
+     unlist(getNodeSet(node, exprs[[i]]))
+}
+</r:function>
+</para>
+<para>
+Alternatively, we can use 
+<r:code>
+findXInclude(emptyLinks[[1]])
+</r:code>
+</para>
+
+<para>
+For finding mistakes in the XML document which lead it not be parseable, 
+use xmllint.
+<br/>
+One of the most common reasons I find that I get this problem is being lazy and not
+using CDATA for r:code nodes.
+</para>
+</section>
+
+<r:code><![CDATA[
+ x <-  1 
+ x && y
+]]></r:code>
+</article>

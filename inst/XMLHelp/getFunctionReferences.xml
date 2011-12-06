@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<rh:help xmlns:rh="http://www.r-project.org/help" xmlns:r="http://www.r-project.org" xmlns:s3="http://www.r-project.org/S3" xmlns:s4="http://www.r-project.org/S4" xmlns:xi="http://www.w3.org/2001/XInclude" created="2009-02-27 15:15:10" updated="2009-05-15 13:06:54">
+  <rh:topic> </rh:topic>
+  <rh:topic>getFunctionReferences</rh:topic>
+  <rh:title>Get information about references to R functions in text</rh:title>
+  <rh:description>
+    <para>This function returns information about references
+to R functions within the text of the document. These are
+r:func elements in the XML. The function returns the name of
+the function and its package if that is specified via
+the pkg attribute.
+     </para>
+  </rh:description>
+  <rh:arguments>
+    <xi:include href="getXIncludeFiles.xml" xpointer="xpointer(//*[@id='doc'])"/>
+    <rh:arg id="namespace">the XML namespace pairing of prefix and URI as a named character vector that is used in the call to &lt;r:func&gt;getNodeSet&lt;/r:func&gt;</rh:arg>
+  </rh:arguments>
+  <rh:value>
+    <para>
+     </para>
+  </rh:value>
+  <rh:details>
+    <para>
+     </para>
+  </rh:details>
+  <rh:seealso>
+   </rh:seealso>
+  <xi:include href="/Users/duncan/authorInfo.xml" xpointer="xpointer(/*/author)"/>
+  <rh:references>
+   </rh:references>
+  <author>
+    <firstname> </firstname>
+    <surname> </surname>
+    <email> </email>
+  </author>
+  <rh:examples>
+    <r:init/>
+    <rh:example id="">
+      <rh:title> </rh:title>
+      <rh:description>
+        <para>
+	</para>
+      </rh:description>
+      <r:code>
+	</r:code>
+    </rh:example>
+  </rh:examples>
+  <rh:keywords>
+    <rh:keyword/>
+  </rh:keywords>
+  <rh:versionIntroduced version=""/>
+</rh:help>
