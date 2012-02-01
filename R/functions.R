@@ -19,7 +19,7 @@ findRawFunctionNames =
   #
   
 function(doc, referencedFunctions = getFunctionReferences(doc),
-          knownFunctions = getAllFunctionNames(, stopWords), stopWords = character())
+          knownFunctions = getAllFunctionNames(stopWords = stopWords), stopWords = character())
 {
    doc = as(doc, "XMLInternalDocument")
 
@@ -47,7 +47,9 @@ function(pkgs = search(), doc = NULL, stopWords = character(), omit.pattern = "^
 {
     #XXX should get only functions.
   ans = unlist(sapply(pkgs, objects, all = TRUE))
-
+  #XXX double sapply should probably be rolled into 1 ~GB
+  ans = ans[sapply(ans, function(x) is.function(get(x)))]
+  
   if(!is.null(doc))
     ans = c(ans, getDocPackageObjects(doc))
   
@@ -103,7 +105,7 @@ getErroneousFunctions =
   # within the r:func values we did match.
   #
   #
-function(doc, nodes = FALSE, loadPackages = TRUE, quietly = TRUE, all = TRUE, force = TRUE)
+  function(doc, nodes = FALSE, loadPackages = TRUE, quietly = TRUE, all = TRUE, force = TRUE)
 {
   doc = as(doc, "XMLInternalDocument")
   funcs = getNodeSet(doc, "//r:func")
