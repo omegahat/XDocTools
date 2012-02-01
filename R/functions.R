@@ -51,7 +51,7 @@ function(pkgs = search(), doc = NULL, stopWords = character(), omit.pattern = "^
   ans = ans[sapply(ans, function(x) is.function(get(x)))]
   
   if(!is.null(doc))
-    ans = c(ans, getDocPackageObjects(doc))
+    ans = c(ans, getDocPackageObjects(doc, funcsOnly = TRUE))
   
   if(length(stopWords))
      ans = ans[! (ans %in% stopWords) ]
@@ -64,7 +64,7 @@ function(pkgs = search(), doc = NULL, stopWords = character(), omit.pattern = "^
 }
 
 getDocPackageObjects =
-function(doc)
+function(doc, funcsOnly = FALSE)
 {
   doc = as(doc, "XMLInternalDocument")    
       # Now load packages that are referenced but not loaded
@@ -77,7 +77,7 @@ function(doc)
   tmp = paste("package", pkgs, sep = ":")
   pkgs = pkgs[!(tmp %in% search())]
   
-  unlist(sapply(pkgs, getPackageObjects))
+  unlist(sapply(pkgs, getPackageObjects, funcsOnly = funcsOnly))
 } 
   
 
@@ -150,22 +150,33 @@ getPackageObjects =
   # and detaching it along with any other packages that were attached as a result
   # of attaching this one.
   #
-function(pkg, all = TRUE, quietly = TRUE)
+  # funcsOnly indicates whether we should return the names of all
+  # objects in the package, or only those that are functions.
+  # Defaults to previous behavior (all objects) ~GB
+function(pkg, all = TRUE, quietly = TRUE, funcsOnly = FALSE)
 {
   orig = search()
   ans = character()
   full.name = paste("package", pkg, sep = ":")
 
+  #initialize to TRUE because according to comment above we want objects whether or not we have to load the package to get them ~GB
+  ok = TRUE
   if(!full.name %in% orig) {
     ok = require(pkg, warn.conflicts = FALSE, character.only = TRUE, quietly = quietly)
-    if(ok) 
-       ans = objects(full.name, all = all)
-       # We need to clean up packages even if require() failed because
-       # it may have attached some dependent packages and then failed
-       # and so left them there!
-    detachPackages(setdiff(search(), orig), TRUE)
   }
-
+  if(ok)
+    {
+      ans = objects(full.name, all = all)
+      if(funcsOnly)
+        ans = ans[sapply(ans, function(nm) is.function(get(nm)))]
+    }
+   # We need to clean up packages even if require() failed because
+   # it may have attached some dependent packages and then failed
+   # and so left them there!
+  
+   # Moved this outside of the if(!full.name %in% orig).
+   #detachPackages knows how to deal with empty set (return TRUE) ~GB 
+  detachPackages(setdiff(search(), orig), TRUE) 
   ans
 }
 
@@ -182,9 +193,13 @@ function(pkgs, hasPrefix = length(grep("^package:", pkgs)))
   pos = match(pkgs, search())
   pos = pos[!is.na(pos)]
 
-    # delete them from highest to lowest in the search path order
-    # so that the positions continue to make sense
-  sapply(sort(pos, decreasing = TRUE), function(i) detach(pos = i))
+    #We need to start with the lowest position due to package
+    #dependencies. We calculate cumulative offsets, complicated,
+    #but using names or starting from the highest position
+    #don't work ~GB
+  offset = cumsum(c(0,rep(1, times = length(pos) - 1)))
+
+  sapply(sort(pos) - offset, function(i) detach( pos = i ))
 }
 
 
