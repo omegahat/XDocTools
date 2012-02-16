@@ -105,13 +105,14 @@ getErroneousFunctions =
   # within the r:func values we did match.
   #
   #
-  function(doc, nodes = FALSE, loadPackages = TRUE, quietly = TRUE, all = TRUE, force = TRUE)
+  function(doc, nodes = FALSE, loadPackages = TRUE, quietly = TRUE, all = TRUE, force = TRUE, additionalPackages = c("XML", "XDocTools"), additionalFunctions = unlist(tryCatch(checkRCodeFunctions(doc), error=function(e) NULL)))
 {
   doc = as(doc, "XMLInternalDocument")
   funcs = getNodeSet(doc, "//r:func")
 
    # Get all function names
   funNames = getAllFunctionNames(doc = doc)
+  if(length(additionalFunctions))
     
   refNames = sapply(funcs, xmlValue)
   i = !(refNames %in% funNames)
@@ -125,7 +126,8 @@ getErroneousFunctions =
   general.possibles = sapply(unique(refNames[i]), agrep, funNames, value = TRUE)
   possibles = possibles[sapply(possibles, length) > 0]
   general.possibles = general.possibles[sapply(general.possibles, length) > 0]  
-
+  files = sapply(funcs[i], function(node) findXInclude(node)[1])
+  filesPerMistake = split(files, refNames[i])
   if(nodes) 
      funcs[i]
   else {
@@ -134,7 +136,8 @@ getErroneousFunctions =
         list(unmatched = ans,
              within.matches = possibles,
              general.matches = general.possibles,
-             allNames = funNames)
+             allNames = funNames,
+             files = filesPerMistake)
      else
         ans
   }
