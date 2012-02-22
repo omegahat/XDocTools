@@ -108,15 +108,17 @@ function(doc, recursive = TRUE, nodes = FALSE, full.names = TRUE,
       return(if(nodes) list() else character())
 
    ans = sapply(els, xmlGetAttr, "href") 
+   isText = sapply(els, function(x) xmlGetAttr(x, "parse", "") == "text")
    
-   if(recursive) {
+   if(recursive && !all(isText)) {
 
       dir = dirname(docName(doc))
+      sub = ans[!isText]
        ## Keep a list of ones we have seen already to avoid cycles.
        # Some cycles may be legit, if there is an xpointer to get a subset.
       if(verbose)
-         cat(docName(doc), "->", paste(ans, collapse = ", "), "\n")
-      tmp = lapply(getRelativeURL(ans, dir),
+         cat(docName(doc), "->", paste(sub, collapse = ", "), "\n")
+      tmp = lapply(getRelativeURL(sub, dir),
                    function(f) {
                            if(verbose) cat(f, "\n")
                            getXIncludeFiles(f, TRUE, nodes, table = FALSE)
