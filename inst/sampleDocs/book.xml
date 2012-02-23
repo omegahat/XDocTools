@@ -1,7 +1,7 @@
 <book xmlns:xi="http://www.w3.org/2001/XInclude">
+<xi:include href="chap3/chap.xml" xpointer="xpointer(//articleinfo)" />
 <title>A Sample Docbook Book</title>
 
 <xi:include href="chap1/chap.xml"/>
 <xi:include href="chap2/chap.xml"/>
-<xi:include href="chap3/chap.xml"/>
 </book>
