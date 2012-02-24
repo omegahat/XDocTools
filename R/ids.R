@@ -98,10 +98,12 @@ function(doc, recursive = TRUE, nodes = FALSE, full.names = TRUE,
           verbose = FALSE, table = FALSE, hierarchical = FALSE)
 {
    normalizeNames = full.names
-   res = list()
    
    if(is.character(doc))
       doc = xmlParse(doc, addFinalizer = !nodes, xinclude = FALSE)
+
+   res = structure(list(name = docName(doc), children = list()),
+                    class = c("XIncludeInfo", "Hierarchy"))
 
    els = getNodeSet(doc, "//xi:include|//xo:include", namespace)
 
@@ -127,10 +129,10 @@ function(doc, recursive = TRUE, nodes = FALSE, full.names = TRUE,
       tmp = lapply(getRelativeURL(sub, dir),
                    function(f) {
                            if(verbose) cat(f, "\n")
-                           getXIncludeFiles(f, TRUE, nodes, table = FALSE)
+                           getXIncludeFiles(f, TRUE, nodes, table = FALSE, hierarchical = hierarchical)
                          })
       if(hierarchical)
-         res[[docName(doc)]] = structure(tmp, names = getRelativeURL(sub, dir))
+         res[["children"]] = structure(tmp, names = as.character(getRelativeURL(sub, dir)))
       else {
          tmp = unlist(tmp)
          ans = c(ans, tmp)
