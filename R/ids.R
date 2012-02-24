@@ -95,21 +95,27 @@ getXIncludeFiles =
 function(doc, recursive = TRUE, nodes = FALSE, full.names = TRUE,
          namespace = c(xi = "http://www.w3.org/2003/XInclude",
                        xo = "http://www.w3.org/2001/XInclude"),  # both versions for completeness
-          verbose = FALSE, table = FALSE)
+          verbose = FALSE, table = FALSE, hierarchical = FALSE)
 {
    normalizeNames = full.names
+   res = list()
    
    if(is.character(doc))
       doc = xmlParse(doc, addFinalizer = !nodes, xinclude = FALSE)
 
    els = getNodeSet(doc, "//xi:include|//xo:include", namespace)
 
-   if(length(els) == 0)
-      return(if(nodes) list() else character())
+   if(length(els) == 0) {
+      if(hierarchical) {
+         res[[docName(doc)]] = if(nodes) list() else character()
+         return(res)
+      } else
+        return(if(nodes) list() else character())
+    }
 
    ans = sapply(els, xmlGetAttr, "href") 
    isText = sapply(els, function(x) xmlGetAttr(x, "parse", "") == "text")
-   
+
    if(recursive && !all(isText)) {
 
       dir = dirname(docName(doc))
@@ -123,15 +129,23 @@ function(doc, recursive = TRUE, nodes = FALSE, full.names = TRUE,
                            if(verbose) cat(f, "\n")
                            getXIncludeFiles(f, TRUE, nodes, table = FALSE)
                          })
-      ans = c(ans, unlist(tmp))
+      if(hierarchical)
+         res[[docName(doc)]] = structure(tmp, names = getRelativeURL(sub, dir))
+      else {
+         tmp = unlist(tmp)
+         ans = c(ans, tmp)
+      }
 
       if(normalizeNames) 
          ans = normalizePath(path.expand(getRelativeURL(ans, dir)))
 
-       if(table)
-         table(ans)
-       else
-          ans
+       if(hierarchical)
+           res
+       else { if(table)
+                table(unlist(ans))
+              else
+                ans
+            }
           
    } else {
       if(nodes)
