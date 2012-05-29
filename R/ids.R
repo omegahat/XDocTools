@@ -95,7 +95,8 @@ getXIncludeFiles =
 function(doc, recursive = TRUE, nodes = FALSE, full.names = TRUE,
          namespace = c(xi = "http://www.w3.org/2003/XInclude",
                        xo = "http://www.w3.org/2001/XInclude"),  # both versions for completeness
-          verbose = FALSE, table = FALSE, hierarchical = FALSE)
+          verbose = FALSE, table = FALSE, hierarchical = FALSE,
+          query = "include[not(ancestor::ignore)]")
 {
    normalizeNames = full.names
    
@@ -105,7 +106,10 @@ function(doc, recursive = TRUE, nodes = FALSE, full.names = TRUE,
    res = structure(list(name = docName(doc), children = list()),
                     class = c("XIncludeInfo", "Hierarchy"))
 
-   els = getNodeSet(doc, "//xi:include|//xo:include", namespace)
+   if(!inherits(query, "AsIs"))
+      query = paste(sprintf("//%s:%s", names(namespace), query), collapse = " | ")
+
+   els = getNodeSet(doc, query, namespace)
 
    if(length(els) == 0) {
       if(hierarchical) {
@@ -129,7 +133,7 @@ function(doc, recursive = TRUE, nodes = FALSE, full.names = TRUE,
       tmp = lapply(getRelativeURL(sub, dir),
                    function(f) {
                            if(verbose) cat(f, "\n")
-                           getXIncludeFiles(f, TRUE, nodes, table = FALSE, hierarchical = hierarchical)
+                           getXIncludeFiles(f, TRUE, nodes, table = FALSE, hierarchical = hierarchical, query = I(query))
                          })
       if(hierarchical)
          res[["children"]] = structure(tmp, names = as.character(getRelativeURL(sub, dir)))
