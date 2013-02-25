@@ -2,7 +2,7 @@ getBibliographyProblems =
 function(doc)
 {
   doc = as(doc, "XMLInternalDocument")  
-  getNodeSet
+#  getNodeSet
 }
 
 biblioDuplicateTitles =

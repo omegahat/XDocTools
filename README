@@ -1,0 +1,29 @@
+This package is the nucleus for tools that allow us to
+programmatically query and modify text documents such as articles,
+papers, books, tutorials, lecture notes, and so on.  
+We want to be able to find all links and bibliography entries and verify them;
+modify image references to point to a different directory; 
+change all but the first instance of an acronym;
+reuse content across multiple documents to ensure it is synchronized.
+
+
+We traditionally write such documents so that another processor
+(e.g. TeX or a Web browser) can render them for us. The markup we add
+is for the processor, not directly for use by the author or the
+readers.  Furthermore, it is difficult to target the same document
+for  a) different renderers and formats, and b)  for different audiences
+such as with or without the code, a short version for print
+or the full version for the Web.
+
+We envisage a much more powerful approach to writing documents which
+support both a) and b) above.  The document is an abstraction where
+the markup identifies concepts for the author and reader, not specific
+instructions to the processor controlling the rendering.  Just like
+CSS, the content and the appearance are separate.
+
+These more abstract documents use a flexible, extensible high-level
+markup, e.g. XML.  The document works as a filing cabinet or database
+for ideas and it can then be transformed into multiple documents for
+different formats and different audiences.
+
+The same markup can be done to some extent with 

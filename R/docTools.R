@@ -116,7 +116,7 @@ function(name)
 checkFunctions =
  # optionally loads the packages that are referenced in the document.
  #
-function(doc, nodes =  if(all) "//r:func" else "//r:func[not(@pkg)]",
+function(doc, nodes =  if(all) "//r:func[not(@exists='false')]" else "//r:func[not(@exists='false') and not(@pkg)]",
           all = FALSE, skip = character(), load = TRUE)
 {
   if(load)

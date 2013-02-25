@@ -122,6 +122,8 @@ function(doc, recursive = TRUE, nodes = FALSE, full.names = TRUE,
    ans = sapply(els, xmlGetAttr, "href") 
    isText = sapply(els, function(x) xmlGetAttr(x, "parse", "") == "text")
 
+   xp = sapply(els, xmlGetAttr, "xpointer", NA) 
+
    if(recursive && !all(isText)) {
 
       dir = dirname(docName(doc))
@@ -130,20 +132,28 @@ function(doc, recursive = TRUE, nodes = FALSE, full.names = TRUE,
        # Some cycles may be legit, if there is an xpointer to get a subset.
       if(verbose)
          cat(docName(doc), "->", paste(sub, collapse = ", "), "\n")
+      
       tmp = lapply(getRelativeURL(sub, dir),
                    function(f) {
                            if(verbose) cat(f, "\n")
                            getXIncludeFiles(f, TRUE, nodes, table = FALSE, hierarchical = hierarchical, query = I(query))
                          })
       if(hierarchical)
-         res[["children"]] = structure(tmp, names = as.character(getRelativeURL(sub, dir)))
+         res[["children"]] = structure(tmp, names = as.character(getRelativeURL(sub, dir)),
+                                         xpointer = xp)
       else {
-         tmp = unlist(tmp)
-         ans = c(ans, tmp)
+         ans = structure(c(ans, unlist(tmp)),
+                          xpointer = c(xp, unlist(lapply(tmp, attr, "xpointer"))))
       }
 
-      if(normalizeNames) 
-         ans = normalizePath(path.expand(getRelativeURL(ans, dir)))
+      if(normalizeNames)  {
+         tmp = getRelativeURL(ans, dir)
+         isURL = grepl("^http:", tmp)
+         
+         if(!all(isURL))
+           tmp[!isURL] = normalizePath(path.expand(tmp[!isURL]))
+         ans = structure(tmp, xpointer = attr(ans, "xpointer"))
+       }
 
        if(hierarchical)
            res
@@ -153,11 +163,13 @@ function(doc, recursive = TRUE, nodes = FALSE, full.names = TRUE,
                 ans
             }
           
-   } else {
+   } else {  # not recursive or all text includes
       if(nodes)
         els
       else {
-        if(normalizeNames) getRelativeURL(ans, dirname(docName(doc))) else ans
+        if(normalizeNames)
+           ans = getRelativeURL(ans, dirname(docName(doc)))
+        structure(ans, xpointer = xp)
       }
    }
 }
@@ -243,6 +255,19 @@ function(doc, nodes = TRUE)
       getNodeSet(doc, "//biblioref")
     else
       unlist(getNodeSet(doc, "//biblioref/@linkend") )
+}
+
+getMissingLinks =
+function(doc, nodes = TRUE)
+{
+   if(is.character(doc))
+      doc = xmlParse(doc, addFinalizer = FALSE)
+   
+   ans = getNodeSet(doc, "//xref[not(@linkend)]")
+   if(nodes)
+     ans
+   else
+     unlist(ans)   
 }
 
 getLinks =

@@ -105,7 +105,8 @@ getErroneousFunctions =
   # within the r:func values we did match.
   #
   #
-  function(doc, nodes = FALSE, loadPackages = TRUE, quietly = TRUE, all = TRUE, force = TRUE, additionalPackages = c("XML", "XDocTools"), additionalFunctions = unlist(tryCatch(checkRCodeFunctions(doc), error=function(e) NULL)))
+  function(doc, nodes = FALSE, loadPackages = TRUE, quietly = TRUE, all = TRUE, force = TRUE,
+            additionalPackages = c("XML", "XDocTools"), additionalFunctions = unlist(tryCatch(checkRCodeFunctions(doc), error=function(e) NULL)))
 {
   doc = as(doc, "XMLInternalDocument")
   funcs = getNodeSet(doc, "//r:func")

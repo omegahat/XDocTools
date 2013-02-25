@@ -18,7 +18,8 @@ export(addFunctionID,
 	xmllint,
         findMissingFigureTitles,
         findMissingTableTitles,
-        addCodePrompt)
+        addCodePrompt,
+        findQuotes)
 
 #	getXIncludes,
 
